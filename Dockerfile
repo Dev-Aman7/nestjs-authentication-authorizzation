@@ -4,8 +4,7 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json* ./
 RUN npm ci
 COPY . .
-# Diagnostic: run build and list dist to verify output exists during image build
-RUN npm run build && ls -la dist || true
+RUN npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /usr/src/app

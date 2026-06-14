@@ -1,0 +1,26 @@
+
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/iam
+      - JWT_PRIVATE_KEY_PATH=/usr/src/app/keys/private.key
+      - JWT_PUBLIC_KEY_PATH=/usr/src/app/keys/public.key
+      - JWT_ACCESS_TOKEN_EXPIRATION=900s
+      - JWT_REFRESH_TOKEN_EXPIRATION=30d
+      - JWT_ISSUER=iam-service
+      - JWT_AUDIENCE=iam-client
+      - PORT=3000
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:7.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data: {}
