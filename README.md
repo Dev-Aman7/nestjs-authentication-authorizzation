@@ -25,6 +25,25 @@ cd /Users/amankumar/Desktop/Projects/nestjs-authentication-authorizzation
 npm install
 ```
 
+## Keys Setup
+
+The application requires JWT private and public keys for authentication. You must generate and place them in the `keys/` folder:
+
+- `keys/private.key` — Private key for signing JWTs
+- `keys/public.key` — Public key for verifying JWTs
+
+**Generate keys (RSA):**
+
+```bash
+mkdir -p keys
+openssl genrsa -out keys/private.key 2048
+openssl rsa -in keys/private.key -pubout -out keys/public.key
+```
+
+These files are referenced in the Docker configuration:
+- `JWT_PRIVATE_KEY_PATH=/usr/src/app/keys/private.key`
+- `JWT_PUBLIC_KEY_PATH=/usr/src/app/keys/public.key`
+
 ## Run Locally
 
 ```bash
