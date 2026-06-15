@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "NestJS: Dev with ts-node-dev",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ts-node-dev",
+      "runtimeArgs": ["--respawn", "--transpile-only", "--inspect=9229", "src/main.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}

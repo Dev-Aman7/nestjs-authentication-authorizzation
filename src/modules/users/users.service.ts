@@ -11,7 +11,7 @@ import { User, UserDocument } from './schemas/user.schema';
 export class UsersService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const existing = await this.userModel.findOne({ email: createUserDto.email }).exec();
     if (existing) {
       throw new ConflictException('Email already in use');

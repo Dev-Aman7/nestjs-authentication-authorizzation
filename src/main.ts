@@ -24,6 +24,16 @@ async function bootstrap() {
     .setTitle('IAM Service')
     .setDescription('Authentication and authorization API for the IAM service')
     .setVersion('0.1')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    }, 'access-token')
+    .addCookieAuth('refresh-token', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'refreshToken',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, configDocument);

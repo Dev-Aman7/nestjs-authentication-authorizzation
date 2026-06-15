@@ -15,7 +15,6 @@ import { UsersModule } from '../users/users.module';
     ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const privateKeyPath = configService.get<string>('jwt.privateKeyPath');

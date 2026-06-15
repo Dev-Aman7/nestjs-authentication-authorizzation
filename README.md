@@ -33,6 +33,24 @@ npm run start:dev
 
 The app runs on `http://localhost:3000` by default.
 
+## Auth API Endpoints
+
+- `POST /auth/signup`
+  - Registers a new user with a default role of `USER`.
+  - Request body: `{ "email": "user@example.com", "password": "your-password" }`
+  - Returns an access token and the created user object.
+  - Sets a refresh token cookie for session refresh.
+- `POST /auth/login`
+  - Authenticates an existing user.
+  - Request body: `{ "email": "user@example.com", "password": "your-password" }`
+  - Returns an access token and sets a refresh token cookie.
+- `POST /auth/refresh`
+  - Refreshes an access token using the refresh token stored in the cookie.
+  - Returns a new access token and updates the refresh cookie.
+- `POST /auth/logout`
+  - Invalidates the current refresh token and clears the refresh cookie.
+  - Requires a valid bearer JWT in the `Authorization` header.
+
 ## Run with Docker
 
 Start the services with Docker Compose:
@@ -78,6 +96,8 @@ The OpenAPI JSON is available at:
 ```bash
 http://localhost:3000/api-json
 ```
+
+Swagger now includes auth operations for signup, login, refresh, and logout. Use the Bearer auth control for protected routes and cookie auth for refresh token requests.
 
 ## Contributing
 

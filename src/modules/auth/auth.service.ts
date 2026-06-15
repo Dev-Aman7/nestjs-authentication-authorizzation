@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserDocument } from '../users/schemas/user.schema';
 import { JwtPayload } from '../../shared/interfaces/jwt-payload.interface';
 import { readFileSync } from 'fs';
@@ -18,6 +19,25 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
+
+  async signup(signup: { email: string; password: string }): Promise<{ accessToken: string; refreshToken: string; user: UserDocument }> {
+    const sanitized: CreateUserDto = {
+      email: signup.email,
+      password: signup.password,
+      roles: ['USER'],
+      permissions: [],
+    };
+
+    const user = await this.usersService.create(sanitized);
+    const userId = user._id.toString();
+
+    const accessToken = await this.createAccessToken(userId, user);
+    const refreshToken = await this.createRefreshToken(userId);
+    const hashedRefreshToken = await argon2.hash(refreshToken);
+    await this.usersService.setCurrentRefreshToken(hashedRefreshToken, userId);
+
+    return { accessToken, refreshToken, user };
+  }
 
   async validateUser(email: string, password: string): Promise<UserDocument | null> {
     const user = await this.usersService.findByEmail(email);
@@ -95,7 +115,6 @@ export class AuthService {
     const expiresIn = this.getRequiredConfig('jwt.accessTokenExpiration') as StringValue;
     const signOptions: JwtSignOptions = {
       algorithm: 'RS256',
-      subject: userId,
       issuer,
       audience,
       expiresIn,
@@ -110,7 +129,6 @@ export class AuthService {
     const expiresIn = this.getRequiredConfig('jwt.refreshTokenExpiration') as StringValue;
     const signOptions: JwtSignOptions = {
       algorithm: 'RS256',
-      subject: userId,
       issuer,
       audience,
       expiresIn,
